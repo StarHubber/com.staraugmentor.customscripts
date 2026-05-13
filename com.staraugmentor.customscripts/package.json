@@ -1,0 +1,23 @@
+{
+  "name": "com.staraugmentor.customscripts",
+  "version": "1.0.0",
+  "displayName": "Custom Scripts Star Augmentor",
+  "description": "Scripts for the Star Augmentor Custom Content",
+  "unity": "2022.3",
+  "unityRelease": "62f3",
+  "documentationUrl": "",
+  "changelogUrl": "",
+  "licensesUrl": "",
+  "dependencies": {
+ },
+ "keywords": [
+    "CustomScripts",
+    "DaimlerTrucks",
+    "Package"
+  ],
+  "author": {
+    "name": "Markus Draxler",
+    "email": "markus.draxler@star-cooperation.com",
+    "url": "https://www.star-cooperation.com/de/kontakt/"
+  }
+}
