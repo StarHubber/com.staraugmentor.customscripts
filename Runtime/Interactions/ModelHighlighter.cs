@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +30,7 @@ namespace StarCooperation
         [Header("Highlight Particles")]
         public GameObject highlightParticlePrefab;
         public bool useExistingParticles = false;
-        public GameObject[] highlightParticles;
+        public List<GameObject> highlightParticles;
 
         [Header("Other Settings")]
         public bool changeRotationCenter = true;
@@ -219,7 +220,8 @@ namespace StarCooperation
                 //if (!modelParts.Contains(meshRend.gameObject))
                 if (!assignedMeshRends.Contains(meshRendFromTotalModel))
                 {
-                    modelPartsLowlight.Add(meshRendFromTotalModel.gameObject);
+                    if (meshRendFromTotalModel != null)
+                        modelPartsLowlight.Add(meshRendFromTotalModel.gameObject);
                 }
             }
             modelLowlighter = new MeshHighlighter(modelPartsLowlight, gameObject);
@@ -250,10 +252,10 @@ namespace StarCooperation
             {
                 if (highlightParticlePrefab != null && !useExistingParticles)
                 {
-                    highlightParticles = new GameObject[modelParts.Count];
+                    highlightParticles = new List<GameObject>(new GameObject[modelParts.Count]);
                 }
 
-                for (int i = 0; i < highlightParticles.Length; i++)
+                for (int i = 0; i < highlightParticles.Count; i++)
                 {
                     if (!useExistingParticles)
                     {
@@ -320,7 +322,7 @@ namespace StarCooperation
 
             if (highlightParticles != null)
             {
-                for (int i = 0; i < highlightParticles.Length; i++)
+                for (int i = 0; i < highlightParticles.Count; i++)
                 {
                     highlightParticles[i].SetActive(doHighlight);
                 }
@@ -371,6 +373,13 @@ namespace StarCooperation
             Highlight(false);
         }
 
+        public void ResetHighlightingAll()
+        {   foreach(var highlighter in activeHighOrLowlighers.ToList())
+            {
+                highlighter.ResetHighlighting();
+            }
+        }
+
         public void SetTransparent(bool disable)
         {
             if (modelHighlighter == null) return;
@@ -414,7 +423,7 @@ namespace StarCooperation
 
             if (highlightParticles != null)
             {
-                for (int i = 0; i < highlightParticles.Length; i++)
+                for (int i = 0; i < highlightParticles.Count; i++)
                 {
                     highlightParticles[i].SetActive(doHighlight);
                 }

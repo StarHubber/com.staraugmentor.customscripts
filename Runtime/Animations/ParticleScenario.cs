@@ -19,6 +19,7 @@ public class ParticleScenario : MonoBehaviour
     {
 
     }
+
     public void ActivateScenario(bool toggle)
     {
         ParticleSystems.ForEach(x => x.gameObject.SetActive(toggle));

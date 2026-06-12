@@ -1,76 +1,102 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace StarCooperation
 {
-	public class PanelAndHotspotHandler : MonoBehaviour
-	{
-		public static PanelAndHotspotHandler instance;
+    public class PanelAndHotspotHandler : MonoBehaviour
+    {
+        public static PanelAndHotspotHandler instance;
 
-		private void Awake()
-		{
-			instance = this;
-		}
+        private bool initialized = false;
+        private int _tooltipRequestId;
 
-		private void Start()
-		{
-			HideAllPanels();
-			HideAllTooltips();
-		}
+        private void Awake()
+        {
+            instance = this;
+        }
 
-		public void HideAllPanels()
-		{
-			foreach (var panelGroup in PanelGroupMember.allPanelGroupMembers)
-			{
-				panelGroup.gameObject.SetActive(false);
-			}
-		}
+        private void Start()
+        {
+            HideAllPanels();
+            Task hide = HideAllTooltips();
+            initialized = true;
+        }
 
-		public void HideAllTooltips()
-		{
-			foreach (var tooltipGroup in TooltipGroupMember.allTooltipGroupMembers)
-			{
-				tooltipGroup.gameObject.SetActive(false);
-			}
-		}
+        public void HideAllPanels()
+        {
+            foreach (var panelGroup in PanelGroupMember.allPanelGroupMembers)
+            {
+                panelGroup.gameObject.SetActive(false);
+            }
+        }
 
-		/// <summary>
-		/// Go to new panel and switch all toggles off.
-		/// </summary>
-		/// <param name="panel"></param>
-		public void GotoPanel(PanelGroupMember panel)
-		{
-			HideAllPanels();
-			if (panel != null)
-			{
-				panel.gameObject.SetActive(true);
-				if (panel.transform.parent.GetComponent<PanelGroupMember>())
-				{
-					panel.transform.parent.gameObject.SetActive(true);
-				}
+        public async Task HideAllTooltips()
+        {
+            foreach (var tooltipGroup in TooltipGroupMember.allTooltipGroupMembers.ToList())
+            {
+                tooltipGroup.gameObject.SetActive(false);
+                await Task.Yield();
+            }
+        }
 
-				// Switch toggles off when entering new panel (could be on from previous selection).
-				// Don't switch toggles off when panel goes inactive, as this could deactivate particles etc. that should stay on when e.g. clicking a Lupe.
-				foreach (var toggle in panel.GetComponentsInChildren<Toggle>())
-				{
-					toggle.isOn = false;
-				}
-			}
-		}
+        /// <summary>
+        /// Go to new panel and switch all toggles off.
+        /// </summary>
+        /// <param name="panel"></param>
+        public void GotoPanel(PanelGroupMember panel)
+        {
+            HideAllPanels();
+            if (panel != null)
+            {
+                panel.gameObject.SetActive(true);
+                if (panel.transform.parent.GetComponent<PanelGroupMember>())
+                {
+                    panel.transform.parent.gameObject.SetActive(true);
+                }
 
-		public void ShowTooltips(TooltipGroupMember tooltips)
-		{
-			HideAllTooltips();
-			if (tooltips != null)
-			{
-				tooltips.gameObject.SetActive(true);
-				if (tooltips.transform.parent.GetComponent<TooltipGroupMember>())   // To avoid activation of deactivated tooltip holder
-				{
-					tooltips.transform.parent.gameObject.SetActive(true);
-				}
-			}
-		}
-	}
+                // Switch toggles off when entering new panel (could be on from previous selection).
+                // Don't switch toggles off when panel goes inactive, as this could deactivate particles etc. that should stay on when e.g. clicking a Lupe.
+                foreach (var toggle in panel.GetComponentsInChildren<Toggle>())
+                {
+                    toggle.isOn = false;
+                }
+            }
+        }
+
+        public async void ShowTooltips(TooltipGroupMember tooltips)
+        {
+            if (initialized)
+            {
+                int requestId = ++_tooltipRequestId;
+
+                bool wasActive = tooltips != null && tooltips.gameObject.activeSelf;
+
+                if (tooltips == null)
+                    return;
+
+                await HideAllTooltips();
+
+                // Falls während await ein neuerer Aufruf kam: abbrechen
+                if (requestId != _tooltipRequestId && tooltips.name != "TooltipsKomponentenMain")
+                    return;
+
+                if (!wasActive)
+                {
+                    Transform parent = tooltips.transform.parent;
+
+                    if (parent != null && parent.GetComponent<TooltipGroupMember>() != null)
+                    {
+                        parent.gameObject.SetActive(true);
+                    }
+
+                    tooltips.gameObject.SetActive(true);
+                }
+            }
+        }
+    }
 }

@@ -10,6 +10,7 @@ using UnityEngine.Localization.Settings;
 
 public class LanguageController : MonoBehaviour
 {
+
     public string language;
     public int index;
     public LocalizationSettings Settings;

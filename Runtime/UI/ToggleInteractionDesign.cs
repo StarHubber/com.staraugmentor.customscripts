@@ -45,6 +45,7 @@ namespace StarCooperation
 			});
 
 			ToggleListener();   // Run once to change sprite when isOn = true, ExecuteInEditMode should be activated
+			//toggle.onValueChanged.Invoke(toggle.isOn);
 		}
 
 		public void ToggleListener()

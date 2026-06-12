@@ -8,13 +8,6 @@ using UnityEngine.UI;
 
 namespace StarCooperation
 {
-    public struct ColumnID
-    {
-        public int ID, TeileNummer, TeileBeschreibung, BauteilBeschreibung, Abkuerzung, Polzahl, Farbe, KammerNummer, AderNummer,
-            SteckKontakt, SteckKontaktNummer, DichtungsTeileNummer, Module, LeitungsKlasse, DrahtNummer, Querschnitt, LeitungsFarbe,
-            AnfangsStecker, AnfangsKammer, EndStecker, EndKammer, Line;
-
-    }
 
     public class CSVMain : MonoBehaviour
     {
@@ -288,6 +281,14 @@ namespace StarCooperation
             //   t = t.Replace("ss", "ß");
             return t;
         }
+    }
+
+    public struct ColumnID
+    {
+        public int ID, TeileNummer, TeileBeschreibung, BauteilBeschreibung, Abkuerzung, Polzahl, Farbe, KammerNummer, AderNummer,
+            SteckKontakt, SteckKontaktNummer, DichtungsTeileNummer, Module, LeitungsKlasse, DrahtNummer, Querschnitt, LeitungsFarbe,
+            AnfangsStecker, AnfangsKammer, EndStecker, EndKammer, Line;
+
     }
 
 }
