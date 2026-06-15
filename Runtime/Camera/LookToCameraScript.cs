@@ -18,8 +18,11 @@ namespace StarCooperation.STAR
 		// Update is called once per frame
 		void Update()
 		{
-			transform.LookAt(Cam.position);
-			transform.position = rotationObject.position;
+			if (Cam != null)
+			{
+				transform.LookAt(Cam.position);
+				transform.position = rotationObject.position;
+			}
 		}
 	}
 }

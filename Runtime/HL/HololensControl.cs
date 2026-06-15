@@ -79,7 +79,9 @@ namespace StarCooperation
             // Compensate target rotation for legacy rotation corrector (e.g. correct rotation corrector ^^)
             Quaternion targetRot = HoloRepair.Core.ContentAppInterface.ContentRotation;
             if (!HoloRepairInterface.anchoringBool)
-                targetRot = targetRot * Quaternion.Euler(control.modelHull.transform.rotation.eulerAngles);
+                targetRot = targetRot * Quaternion.Euler(-control.modelHull.transform.GetChild(0).transform.rotation.eulerAngles);
+            //targetRot = targetRot * Quaternion.Euler(new Vector3(90,0,0));
+            
 
             ActivateModelObjects(true);
 
@@ -90,7 +92,7 @@ namespace StarCooperation
                 t = Mathf.Clamp01(t);
                 movedModel.transform.position = Vector3.Slerp(startPos, targetPos, t);
                 movedModel.transform.rotation = Quaternion.Slerp(startRot, targetRot, t);
-                movedModel.transform.localScale = Vector3.Slerp(startScale, Vector3.one, t);
+                movedModel.transform.localScale = Vector3.Slerp(startScale, startScale, t);
                 yield return null;
             }
         }
@@ -108,6 +110,7 @@ namespace StarCooperation
             //}
 
             // Start calibration and assign to finished event
+            HoloRepairInterface.anchoringBool = false;
             if (!HoloRepairInterface.anchoringBool)
                 HoloRepair.Core.ContentAppInterface.StartCalibration();
             //HoloRepair.Core.ContentAppInterface.OnCalibrationFinished += CalibrationFinished;

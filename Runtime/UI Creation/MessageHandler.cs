@@ -1,10 +1,6 @@
 using NaughtyAttributes;
 using STAR.Utils;
 using StarCooperation.Export;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using static StarCooperation.MoveCamera;
@@ -26,7 +22,6 @@ namespace StarCooperation.ExportCCP
             Interface.UIBackButtonClicked += UI_BackButtonClicked;
             Interface.AllowCameraAnimationChanged += OnAllowCameraAnimationChange;
             Interface.CameraSettingsChanged += HandleCameraSettingsChange;
-
         }
         [Button]
         public void SetGlobalCamera()
@@ -41,8 +36,8 @@ namespace StarCooperation.ExportCCP
         }
         public void SetBadgeAndHull(GameObject badge, GameObject hull)
         {
-            Interface.SetBadge(badge);
-            Interface.Sethull(hull);
+            Interface?.SetBadge(badge);
+            Interface?.Sethull(hull);
         }
         private void HandleCameraSettingsChange(string key, bool boolean)
         {

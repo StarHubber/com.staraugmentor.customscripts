@@ -62,15 +62,20 @@ public class FourStrokeValveAnim : MonoBehaviour
 
     void InitValve(Valve v)
     {
-        v.startPos = v.transform.position;
-
+        v.startPos = v.transform.localPosition;
         // lokale Richtung → Welt-Richtung umrechnen
-        v.worldMoveDir = v.transform.TransformDirection(v.localMoveDirection).normalized;
+
+        Vector3 axisWorld = v.transform.TransformDirection(v.localMoveDirection).normalized;
+
+        if (Vector3.Dot(axisWorld, Vector3.down) < 0f)
+            axisWorld = -axisWorld;
+
+        v.worldMoveDir = v.transform.parent.InverseTransformDirection(axisWorld).normalized;
     }
 
     void InitPiston(Piston p)
     {
-        p.startPos = p.transform.position;
+        p.startPos = p.transform.localPosition;
         p.worldMoveDir = p.transform.TransformDirection(p.localMoveDirection).normalized;
     }
 
@@ -127,7 +132,7 @@ public class FourStrokeValveAnim : MonoBehaviour
                 lift = SmoothLift(t);
             }
 
-            v.transform.position = v.startPos + v.worldMoveDir * (lift * valveLift);
+            v.transform.localPosition = v.startPos + v.worldMoveDir * (lift * valveLift);
         }
 
         foreach (var v in exhaustValves)
@@ -142,7 +147,7 @@ public class FourStrokeValveAnim : MonoBehaviour
                 lift = SmoothLift(t);
             }
 
-            v.transform.position = v.startPos + v.worldMoveDir * (lift * valveLift);
+            v.transform.localPosition = v.startPos + v.worldMoveDir * (lift * valveLift);
         }
     }
 
@@ -150,7 +155,7 @@ public class FourStrokeValveAnim : MonoBehaviour
     {
         foreach (var v in valves)
         {
-            v.transform.position = v.startPos + v.worldMoveDir * (lift * valveLift);
+            v.transform.localPosition = v.startPos + v.worldMoveDir * (lift * valveLift);
         }
     }
 
@@ -169,7 +174,7 @@ public class FourStrokeValveAnim : MonoBehaviour
 
             float value = (1f - Mathf.Cos(shiftedCycle * 4f * Mathf.PI)) / 2f;
 
-            p.transform.position =
+            p.transform.localPosition =
                 p.startPos + p.worldMoveDir * (value * p.strokeLength);
         }
     }
@@ -179,7 +184,7 @@ public class FourStrokeValveAnim : MonoBehaviour
     {
         foreach (var p in pistons)
         {
-            p.transform.position =
+            p.transform.localPosition =
                 p.startPos + p.worldMoveDir * (value * p.strokeLength);
         }
     }

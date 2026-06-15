@@ -11,7 +11,7 @@ public class ConstantThrottleController : MonoBehaviour
     public class Valve
     {
         public Transform transform;
-        public Vector3 localMoveDirection = Vector3.up;
+        public Vector3 localMoveDirection = Vector3.down;
 
         [HideInInspector] public Vector3 startPos;
         [HideInInspector] public Vector3 worldMoveDir;
@@ -86,8 +86,8 @@ public class ConstantThrottleController : MonoBehaviour
         // lineare Ventile
         foreach (var v in throttleValves)
         {
-            v.startPos = v.transform.position;
-            v.worldMoveDir = v.transform.TransformDirection(v.localMoveDirection).normalized;
+            v.startPos = v.transform.localPosition;
+            v.worldMoveDir = v.localMoveDirection;
         }
 
         // rotierende Ventile
@@ -149,7 +149,7 @@ public class ConstantThrottleController : MonoBehaviour
         // lineare Ventile bewegen
         foreach (var v in throttleValves)
         {
-            v.transform.position =
+            v.transform.localPosition =
                 v.startPos + v.worldMoveDir * (linearValue * liftAmount);
         }
 
@@ -173,7 +173,7 @@ public class ConstantThrottleController : MonoBehaviour
 
         // Position um Pivot drehen
         //rv.transform.localPosition =
-         //   rv.pivot.localPosition + rot * rv.startOffset;
+        //   rv.pivot.localPosition + rot * rv.startOffset;
 
         // Rotation der Klappe
         rv.transform.localRotation =

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine;
+
 public class TooltipAvoidCollisions : MonoBehaviour
 {
     public LayerMask tooltipLayer;

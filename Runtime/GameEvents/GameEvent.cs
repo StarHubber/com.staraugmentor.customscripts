@@ -6,7 +6,7 @@ using NaughtyAttributes;
 
 namespace STAR.Utils
 {
-	[CreateAssetMenu(fileName = "NewGameEvent", menuName = "STAR Cooperation/Events/Game Event")]
+	[CreateAssetMenu(fileName = "NewGameEvent", menuName = "STAR Cooperation/STAR/Events/Game Event")]
 	[DefaultExecutionOrder(100)] // -> see OnEnable()
 	public class GameEvent : ScriptableObject
 	{

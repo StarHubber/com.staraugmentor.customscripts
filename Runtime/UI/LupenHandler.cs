@@ -54,7 +54,7 @@ namespace StarCooperation
                 toggle.onValueChanged.AddListener(isOn => buttonLupe.gameObject.SetActive(isOn));
                 panelToOpen.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => SceneManager.instance.GetComponent<PanelAndHotspotHandler>().GotoPanel(this.transform.parent.GetComponent<PanelGroupMember>()));
                 panelToOpen.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => SceneManager.instance.GetComponent<PanelAndHotspotHandler>().ShowTooltips(this.GetComponent<UIComponent_Step>().transform.parent.GetComponent<TooltipGroupMember>()));
-                panelToOpen.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => this.GetComponent<ToggleListener>().highlighter.ResetHighlightingAll());
+                panelToOpen.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => this.GetComponent<ToggleListener>().highlighter.ResetHighlighting());
             }
 
             // Copy Lupen-callbacks to Tooltip Lupen-callbacks

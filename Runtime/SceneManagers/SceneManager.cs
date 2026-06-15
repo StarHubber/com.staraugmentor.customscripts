@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 namespace StarCooperation
 {
+    [DefaultExecutionOrder(-1000)]
     public class SceneManager : MonoBehaviour, IAutoConfigurableSceneManager
     {
         public static SceneManager instance;

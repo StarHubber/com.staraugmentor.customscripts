@@ -90,7 +90,7 @@ namespace StarCooperation
 				});
 			}
 
-			if (camTrans != null)
+			if (camTrans != null && DeviceSwitcher.Instance?.device == AppType.TA)
 			{
 				MoveCamera comp = Camera.main.gameObject.transform.GetComponent<MoveCamera>();
 				this.gameObject.GetComponent<UnityEngine.UI.Toggle>().onValueChanged.AddListener((value) => comp.SetNewCameraLocation(camTrans.transform));

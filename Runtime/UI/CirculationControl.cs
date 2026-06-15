@@ -118,7 +118,7 @@ namespace STAR.DaimlerTrucks
         public void SetAnimations(RotateTires rotateTires)
         {
             rotateTires.rotate = true;
-            rotateTires.speedZ = 160;
+            rotateTires.speedZ = 60;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace StarCooperation
         None
     }
 
-    //[DefaultExecutionOrder(-1000)]
+    [DefaultExecutionOrder(-1000)]
     public class DeviceSwitcher : MonoBehaviour
     {
         public static DeviceSwitcher Instance { get; private set; }
@@ -72,7 +72,7 @@ namespace StarCooperation
             eventSystemTA.SetActive(false);
 
             //if (DIService.Resolve<IARAnchorManager>() != null)
-            if (UnityEngine.SceneManagement.SceneManager.GetSceneByName("ARep_Main_HoloLens").IsValid())  // For Unity Editor ARep
+            if (UnityEngine.SceneManagement.SceneManager.GetSceneByName("ARep_Main_HoloLens").IsValid() || UnityEngine.SceneManagement.SceneManager.GetSceneByName("ARep_Main_Android").IsValid())  // For Unity Editor ARep
             {
                 device = AppType.HL;
                 //arepSceneFound = true;

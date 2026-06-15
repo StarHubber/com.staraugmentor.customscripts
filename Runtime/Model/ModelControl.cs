@@ -1,7 +1,6 @@
 ﻿using NaughtyAttributes;
 using StarCooperation.Export;
 using StarCooperation.ExportCCP;
-using StarCooperation.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,7 +31,7 @@ namespace StarCooperation
         public GameObject modelHull;
         public GameObject modelBadge;
         public GameObject modelShadow;
-        [HideInInspector] public List<MeshRenderer> modelMeshRends;
+        [HideInInspector] public List<MeshRenderer> modelMeshRends = new List<MeshRenderer>();
 
         [Header("Model Color Define")]
         public List<MaterialSet> MaterialSets = new List<MaterialSet>();
@@ -62,7 +61,7 @@ namespace StarCooperation
             modelBounds.center = Vector3.zero;  // Always within car model
 
             // Get mesh renderer in awake, might be accessed from other scripts during Start
-            modelMeshRends = new List<MeshRenderer>();
+            //modelMeshRends = new List<MeshRenderer>();
 
             var exceptionMeshRends = new List<MeshRenderer>();
             if (fadeAndLowlightException != null)
@@ -109,7 +108,8 @@ namespace StarCooperation
                     }
                 }
                 materialsColored = false;
-            } else
+            }
+            else
             {
                 foreach (MaterialSet set in MaterialSets)
                 {
@@ -146,7 +146,8 @@ namespace StarCooperation
         /// <param name="opacity"></param>
         public void ChangeModelPartMaterialOpacity(float opacity)
         {
-            foreach (var mat in sharedMeshRend.sharedMaterials) {
+            foreach (var mat in sharedMeshRend.sharedMaterials)
+            {
                 mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, opacity);
             }
             //foreach (var meshRend in modelMeshRends)

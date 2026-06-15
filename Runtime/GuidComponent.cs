@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+namespace StarCooperation.STAR
+{
     [ExecuteInEditMode]
     public class GUIDComponent : MonoBehaviour
     {
@@ -44,4 +46,5 @@ using UnityEngine;
             this.guid = guid;
         }
     }
+}
 

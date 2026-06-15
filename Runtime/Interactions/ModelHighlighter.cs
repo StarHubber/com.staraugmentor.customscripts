@@ -1,4 +1,5 @@
 ﻿using System;
+using StarCooperation.STAR;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -215,7 +216,7 @@ namespace StarCooperation
                 assignedMeshRends.AddRange(modelpart.GetComponentsInChildren<MeshRenderer>(true));
             }
 
-            foreach (var meshRendFromTotalModel in ModelControl.Instance.modelMeshRends)
+            foreach (var meshRendFromTotalModel in ModelControl.Instance?.modelMeshRends)
             {
                 //if (!modelParts.Contains(meshRend.gameObject))
                 if (!assignedMeshRends.Contains(meshRendFromTotalModel))

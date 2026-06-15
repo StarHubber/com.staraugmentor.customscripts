@@ -4,23 +4,23 @@ using UnityEngine;
 
 namespace StarCooperation.LegacyLocalization
 {
-    public abstract class LocalizedTextBase : MonoBehaviour
-    {
-        public bool removeWordwrap = false;
-        public string key;
+	public abstract class LocalizedTextBase : MonoBehaviour
+	{
+		public bool removeWordwrap = false;
+		public string key;
 
-        private void OnEnable()
-        {
-            UpdateText();
-            Localizer.OnLocalizerLoaded += UpdateText;
+		private void OnEnable()
+		{
+			UpdateText();
+            Localizer.OnLocalizerLoaded += UpdateText;            
         }
 
-        private void Awake()
-        {
-            // Update text once in Awake, before SortChildren runs ins Start - Localizer got -100 execution order, so this is OK.
-            // Needs to run in Awake, because OnEnable runs before Localizer is actually set up.
-            // Needs to run in OnEnable as well for tooltips.
-            UpdateText();
+		private void Awake()
+		{
+			// Update text once in Awake, before SortChildren runs ins Start - Localizer got -100 execution order, so this is OK.
+			// Needs to run in Awake, because OnEnable runs before Localizer is actually set up.
+			// Needs to run in OnEnable as well for tooltips.
+			UpdateText();
             Localizer.OnLanguageChanged += UpdateText;
         }
 
@@ -32,18 +32,18 @@ namespace StarCooperation.LegacyLocalization
 
 
         private void OnDestroy()
-        {
-            Localizer.OnLanguageChanged -= UpdateText;
-        }
+		{
+			Localizer.OnLanguageChanged -= UpdateText;
+		}
 
-        public abstract string GetText();
+		public abstract string GetText();
 
-        public void SetKey(string key)
-        {
-            this.key = key;
-            UpdateText();
-        }
+		public void SetKey(string key)
+		{
+			this.key = key;
+			UpdateText();
+		}
 
-        public abstract void UpdateText();
-    }
+		public abstract void UpdateText();
+	}
 }
