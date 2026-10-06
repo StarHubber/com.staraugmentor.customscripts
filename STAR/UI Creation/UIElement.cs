@@ -37,7 +37,7 @@ namespace StarCooperation
         }
         public void GetNames()
         {
-            var key = GetComponent<LocalizedTextAuto>().key;
+            var key = GetComponent<LocalizedTextAutoCustom>().key;
             //NamesDictionary = Localizer.GetAllTexts(key, false);
         }
     }

@@ -96,7 +96,7 @@ namespace StarCooperation
 
         public void AddStecker()
         {
-            string[] split = this.GetComponent<LegacyLocalization.LocalizedTextAuto>().key.Split('_');
+            string[] split = this.GetComponent<LegacyLocalization.LocalizedTextAutoCustom>().key.Split('_');
             foreach (var stecker in SteckerHandler.SteckerList)
             {
                 if (split[1] == stecker.SteckerInfo.id)
