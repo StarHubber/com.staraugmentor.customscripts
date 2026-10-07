@@ -45,7 +45,7 @@ namespace StarCooperation
         {
             foreach (var item in ToggleEar.ToggleList)
             {
-                string temp = item.GetComponent< LegacyLocalization.LocalizedTextAutoCustom>().key;
+                string temp = item.GetComponent< LegacyLocalization.LocalizedTextAuto>().key;
                 string[] split = temp.Split('_');
                 if (split[1] == SteckerInfo.id)
                 {

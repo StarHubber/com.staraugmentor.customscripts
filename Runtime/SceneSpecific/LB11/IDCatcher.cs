@@ -17,7 +17,7 @@ namespace StarCooperation.Localization
 
         private void Delayer()
         {
-            Key = GetComponent<LegacyLocalization.LocalizedTextAutoCustom>().key;
+            Key = GetComponent<LegacyLocalization.LocalizedTextAuto>().key;
             string[] test = Key.Split('_');
             Text.SetText(test[1]);
         }

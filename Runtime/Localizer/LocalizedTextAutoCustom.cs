@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace StarCooperation.LegacyLocalization
 {
-	public class LocalizedTextAutoCustom : LocalizedTextBase
+	public class LocalizedTextAuto : LocalizedTextBase
 	{
 		private Text text;
 		private TextMesh textMesh;
