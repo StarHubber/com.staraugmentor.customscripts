@@ -19,6 +19,9 @@ public class ArrowFlowController : MonoBehaviour
     [Header("Animation")]
     public float highlightTime = 0.2f;
 
+    [Tooltip("Pause nach einem kompletten Durchlauf in Sekunden")]
+    public float loopPauseTime = 1.0f;
+
     private Coroutine animationRoutine;
     private bool isRunning;
 
@@ -46,8 +49,15 @@ public class ArrowFlowController : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        DeactivateFlow();
+    }
+
     private void OnDestroy()
     {
+        DeactivateFlow();
+
         if (targetToggle != null)
         {
             targetToggle.onValueChanged.RemoveListener(OnToggleChanged);
@@ -108,6 +118,14 @@ public class ArrowFlowController : MonoBehaviour
                 }
 
                 yield return new WaitForSeconds(highlightTime);
+            }
+
+            // Nach einem kompletten Durchlauf pausieren
+            HideAllArrows();
+
+            if (loopPauseTime > 0)
+            {
+                yield return new WaitForSeconds(loopPauseTime);
             }
         }
     }

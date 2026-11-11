@@ -43,14 +43,21 @@ public class HighlightController : MonoBehaviour
         OnToggleChanged(toggle.isOn);
     }
 
+    private void OnDisable()
+    {
+        OnToggleChanged(false);
+    }
+
     private void OnDestroy()
     {
+        OnToggleChanged(false);
+
         if (toggle != null)
         {
             toggle.onValueChanged.RemoveListener(OnToggleChanged);
         }
     }
-
+    
     private void OnToggleChanged(bool isOn)
     {
         foreach (var group in colorGroups)
