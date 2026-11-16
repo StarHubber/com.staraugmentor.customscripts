@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
@@ -21,27 +22,89 @@ public static class UnityWebRequestExtensions
 
 public class MicrosoftTranslator
 {
-    private string subscriptionKey = "DEIN_AZURE_TRANSLATOR_KEY";
+    private const int MaxCharactersPerRequest = 50000;
+    private const int MaxTextsPerRequest = 100;
+
+    private string subscriptionKey = "FgLdkaw4SQ7oR4KliELrkjTLzOc8I2MrJNBLQypAaxBsGaN46ElHJQQJ99CKACPV0roXJ3w3AAAbACOG7gU6";
     private string region = "germanywestcentral"; // aus Azure: Keys and Endpoint
-    private string endpoint = "https://api.cognitive.microsofttranslator.com";
+    private string endpoint = "https://api.cognitive.microsofttranslator.com/";
 
     /*public IEnumerator Start()
     {
         yield return Translate("Fuel pump", "de", result =>
         {
-            Debug.Log("Übersetzung: " + result);
+            Debug.Log("ï¿½bersetzung: " + result);
         });
     }*/
 
     public async Task<string> TranslateAsync(string text, string targetLanguage)
     {
-        string route = $"/translate?api-version=3.0&to={targetLanguage}";
-        string url = endpoint + route;
+        string[][] translations = await TranslateBatchAsync(new[] { text }, new[] { targetLanguage });
+        return translations[0][0];
+    }
 
-        string jsonBody = "[{\"Text\":\"" + EscapeJson(text) + "\"}]";
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+    public async Task<string[][]> TranslateBatchAsync(string[] texts, string[] targetLanguages)
+    {
+        if (texts == null)
+            throw new ArgumentNullException(nameof(texts));
+        if (targetLanguages == null || targetLanguages.Length == 0)
+            throw new ArgumentException("At least one target language is required.", nameof(targetLanguages));
 
-        using UnityWebRequest request = new UnityWebRequest(url, "POST");
+        string[][] translations = new string[texts.Length][];
+        for (int i = 0; i < translations.Length; i++)
+            translations[i] = new string[targetLanguages.Length];
+
+        int textIndex = 0;
+        while (textIndex < texts.Length)
+        {
+            List<string> batch = new List<string>();
+            int batchCharacterCount = 0;
+
+            while (textIndex < texts.Length && batch.Count < MaxTextsPerRequest)
+            {
+                string text = texts[textIndex] ?? string.Empty;
+                long textCharacterCount = (long)text.Length * targetLanguages.Length;
+                if (textCharacterCount > MaxCharactersPerRequest)
+                {
+                    throw new ArgumentException(
+                        $"Text at index {textIndex} exceeds the {MaxCharactersPerRequest}-character request limit across target languages.",
+                        nameof(texts));
+                }
+
+                if (batch.Count > 0 && batchCharacterCount + textCharacterCount > MaxCharactersPerRequest)
+                    break;
+
+                batch.Add(text);
+                batchCharacterCount += (int)textCharacterCount;
+                textIndex++;
+            }
+
+            string[][] batchTranslations = await TranslateChunkAsync(batch, targetLanguages);
+            for (int i = 0; i < batchTranslations.Length; i++)
+                translations[textIndex - batchTranslations.Length + i] = batchTranslations[i];
+        }
+
+        return translations;
+    }
+
+    private async Task<string[][]> TranslateChunkAsync(List<string> texts, string[] targetLanguages)
+    {
+        StringBuilder urlBuilder = new StringBuilder(endpoint).Append("translate?api-version=3.0");
+        foreach (string targetLanguage in targetLanguages)
+            urlBuilder.Append("&to=").Append(UnityWebRequest.EscapeURL(targetLanguage));
+
+        StringBuilder jsonBuilder = new StringBuilder("[");
+        for (int i = 0; i < texts.Count; i++)
+        {
+            if (i > 0)
+                jsonBuilder.Append(',');
+            jsonBuilder.Append("{\"Text\":\"").Append(EscapeJson(texts[i])).Append("\"}");
+        }
+        jsonBuilder.Append(']');
+
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBuilder.ToString());
+
+        using UnityWebRequest request = new UnityWebRequest(urlBuilder.ToString(), "POST");
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
 
@@ -53,36 +116,61 @@ public class MicrosoftTranslator
 
         if (request.result != UnityWebRequest.Result.Success)
         {
-            Debug.LogError(request.responseCode + " - " + request.error);
-            Debug.LogError(request.downloadHandler.text);
+            throw new InvalidOperationException(
+                $"Microsoft Translator request failed ({request.responseCode}): {request.error}. {request.downloadHandler.text}");
         }
 
-        string response = request.downloadHandler.text;
-        Debug.Log(response);
+        TranslatorResponse[] response = JsonHelper.FromJson<TranslatorResponse>(request.downloadHandler.text);
+        if (response.Length != texts.Count)
+            throw new InvalidOperationException("Microsoft Translator returned an unexpected number of translations.");
 
-        string translatedText = ParseFirstTranslation(response);
-        return translatedText;
-    }
-
-    private string ParseFirstTranslation(string json)
-    {
-        TranslatorResponse[] response = JsonHelper.FromJson<TranslatorResponse>(json);
-
-        if (response.Length == 0 ||
-            response[0].translations == null ||
-            response[0].translations.Length == 0)
+        string[][] translations = new string[texts.Count][];
+        for (int textIndex = 0; textIndex < response.Length; textIndex++)
         {
-            return "";
+            translations[textIndex] = new string[targetLanguages.Length];
+            for (int languageIndex = 0; languageIndex < targetLanguages.Length; languageIndex++)
+            {
+                if (response[textIndex].translations == null)
+                    continue;
+
+                foreach (Translation translation in response[textIndex].translations)
+                {
+                    if (string.Equals(translation.to, targetLanguages[languageIndex], StringComparison.OrdinalIgnoreCase))
+                    {
+                        translations[textIndex][languageIndex] = translation.text;
+                        break;
+                    }
+                }
+            }
         }
 
-        return response[0].translations[0].text;
+        return translations;
     }
 
     private string EscapeJson(string value)
     {
-        return value
-            .Replace("\\", "\\\\")
-            .Replace("\"", "\\\"");
+        StringBuilder escaped = new StringBuilder(value.Length);
+        foreach (char character in value)
+        {
+            switch (character)
+            {
+                case '\\': escaped.Append("\\\\"); break;
+                case '"': escaped.Append("\\\""); break;
+                case '\b': escaped.Append("\\b"); break;
+                case '\f': escaped.Append("\\f"); break;
+                case '\n': escaped.Append("\\n"); break;
+                case '\r': escaped.Append("\\r"); break;
+                case '\t': escaped.Append("\\t"); break;
+                default:
+                    if (char.IsControl(character))
+                        escaped.Append("\\u").Append(((int)character).ToString("x4"));
+                    else
+                        escaped.Append(character);
+                    break;
+            }
+        }
+
+        return escaped.ToString();
     }
 }
 
