@@ -7,9 +7,9 @@ public class StateSelector : MonoBehaviour
 {
     public enum DeviceState
     {
-        Off = 0,
-        On = 1,
-        Start = 2
+        OFF = 0,
+        ON = 1,
+        START = 2
     }
 
     [Header("UI")]
@@ -21,7 +21,7 @@ public class StateSelector : MonoBehaviour
     public RectTransform indicatorImage;
 
     [Header("Current State")]
-    public DeviceState currentState = DeviceState.Off;
+    public DeviceState currentState = DeviceState.OFF;
 
     [Header("Angles")]
     public float offAngle = -30f;
@@ -52,24 +52,24 @@ public class StateSelector : MonoBehaviour
 
     private void NextState()
     {
-        if (currentState == DeviceState.Off)
+        if (currentState == DeviceState.OFF)
         {
-            currentState = DeviceState.On;
+            currentState = DeviceState.ON;
             UpdateUI(false);
         }
-        else if (currentState == DeviceState.On)
+        else if (currentState == DeviceState.ON)
         {
-            currentState = DeviceState.Start;
+            currentState = DeviceState.START;
             UpdateUI(true);
         }
     }
 
     private void PreviousState()
     {
-        if (currentState == DeviceState.Start ||
-            currentState == DeviceState.On)
+        if (currentState == DeviceState.START ||
+            currentState == DeviceState.ON)
         {
-            currentState = DeviceState.Off;
+            currentState = DeviceState.OFF;
             UpdateUI(false);
 
             if (workshopModeManager == null)
@@ -90,10 +90,10 @@ public class StateSelector : MonoBehaviour
     private void UpdateUI(bool playStartAnimation)
 {
     // Links nur aktiv, wenn wir nicht im OFF-Zustand sind
-    leftButton.interactable = currentState != DeviceState.Off;
+    leftButton.interactable = currentState != DeviceState.OFF;
 
     // Rechts nur aktiv, wenn wir nicht im START-Zustand sind
-    rightButton.interactable = currentState != DeviceState.Start;
+    rightButton.interactable = currentState != DeviceState.START;
 
     if (stateText != null)
         stateText.text = currentState.ToString();
@@ -117,16 +117,16 @@ public class StateSelector : MonoBehaviour
 
         switch (currentState)
         {
-            case DeviceState.Off:
+            case DeviceState.OFF:
                 angle = offAngle;
                 break;
 
-            case DeviceState.On:
+            case DeviceState.ON:
                 angle = onAngle;
                 break;
 
-            case DeviceState.Start:
-                // Motor läuft -> Schlüssel steht wieder bei ON
+            case DeviceState.START:
+                // Motor luft -> Schlssel steht wieder bei ON
                 angle = onAngle;
                 break;
         }
@@ -144,7 +144,7 @@ public class StateSelector : MonoBehaviour
         yield return RotateToAngle(startTurnAngle, onAngle, returnDuration);
 
         // Zustand bleibt START
-        currentState = DeviceState.Start;
+        currentState = DeviceState.START;
 
         if (stateText != null)
             stateText.text = currentState.ToString();
@@ -176,22 +176,22 @@ public class StateSelector : MonoBehaviour
 
         switch (currentState)
         {
-            case DeviceState.Off:
+            case DeviceState.OFF:
                 targetAngle = offAngle;
                 break;
 
-            case DeviceState.On:
+            case DeviceState.ON:
                 targetAngle = onAngle;
                 break;
 
-            case DeviceState.Start:
+            case DeviceState.START:
                 targetAngle = onAngle;
                 break;
         }
 
         float currentAngle = indicatorImage.localEulerAngles.z;
 
-        // Bereich auf -180° bis +180° normieren
+        // Bereich auf -180ï¿½ bis +180ï¿½ normieren
         if (currentAngle > 180f)
             currentAngle -= 360f;
 

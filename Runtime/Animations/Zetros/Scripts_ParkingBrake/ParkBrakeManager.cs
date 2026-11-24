@@ -62,7 +62,7 @@ public class ParkBrakeManager : MonoBehaviour
             return;
 
         // Parkbremse ist aktuell EIN:
-        // Lösen immer erlaubt
+        // Lï¿½sen immer erlaubt
         if (IsParkBrakeOn)
         {
             IsParkBrakeOn = false;
@@ -103,7 +103,7 @@ public class ParkBrakeManager : MonoBehaviour
         if (counterManager == null)
             return;
 
-        // Fahrzeug <5 km/h und Parkbremse ist aktuell gelöst
+        // Fahrzeug <5 km/h und Parkbremse ist aktuell gelï¿½st
         if (counterManager.currentValue < 5f &&
             !IsParkBrakeOn)
         {
@@ -134,7 +134,7 @@ public class ParkBrakeManager : MonoBehaviour
             return;
 
         // Nur im Zustand START
-        if (stateSelector.currentState != StateSelector.DeviceState.Start)
+        if (stateSelector.currentState != StateSelector.DeviceState.START)
             return;
 
         // Nur wenn Parkbremse aktiv
@@ -175,7 +175,7 @@ public class ParkBrakeManager : MonoBehaviour
         }
 
         // Muss weiterhin auf START stehen
-        if (stateSelector.currentState != StateSelector.DeviceState.Start)
+        if (stateSelector.currentState != StateSelector.DeviceState.START)
         {
             autoReleaseCoroutine = null;
             yield break;

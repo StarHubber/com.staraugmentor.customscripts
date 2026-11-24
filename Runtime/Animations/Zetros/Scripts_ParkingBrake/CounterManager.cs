@@ -73,7 +73,7 @@ public class CounterManager : MonoBehaviour
     {
         // Beschleunigen nur im Zustand START
         if (stateSelector == null ||
-            stateSelector.currentState != StateSelector.DeviceState.Start)
+            stateSelector.currentState != StateSelector.DeviceState.START)
         {
             return;
         }
@@ -119,7 +119,7 @@ public class CounterManager : MonoBehaviour
     {
         if (counterText != null)
         {
-            counterText.text = currentValue.ToString("F1");
+            counterText.text = currentValue.ToString("F1") + " km/h";
         }
     }
 
